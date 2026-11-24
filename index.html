@@ -1,0 +1,1780 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>FOLIO — Arsip Cerita & Sastra Independen</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400..700;1,400..700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-page: #FAF9F5;
+      --bg-surface: #FFFFFF;
+      --bg-subtle: #F2F0E8;
+      --text-primary: #141413;
+      --text-secondary: #5C5B57;
+      --text-muted: #8E8C84;
+      --border-light: #E6E4DC;
+      --border-dark: #141413;
+      --accent-gold: #D97706;
+      --accent-green: #15803D;
+      --accent-red: #B91C1C;
+      --font-serif: 'Lora', Georgia, serif;
+      --font-sans: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+      --transition-smooth: all 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: var(--bg-page);
+      color: var(--text-primary);
+      font-family: var(--font-sans);
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Editorial Header */
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 40;
+      background-color: rgba(250, 249, 245, 0.92);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border-light);
+      padding: 1rem 2rem;
+    }
+
+    .nav-container {
+      max-width: 1120px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+    }
+
+    .brand {
+      display: flex;
+      align-items: baseline;
+      gap: 0.65rem;
+      cursor: pointer;
+      text-decoration: none;
+      color: var(--text-primary);
+    }
+
+    .brand-title {
+      font-family: var(--font-serif);
+      font-weight: 700;
+      font-size: 1.55rem;
+      letter-spacing: 0.08em;
+    }
+
+    .brand-tag {
+      font-size: 0.72rem;
+      text-transform: uppercase;
+      letter-spacing: 0.14em;
+      color: var(--text-muted);
+      border-left: 1px solid var(--border-light);
+      padding-left: 0.65rem;
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .nav-btn {
+      background: transparent;
+      border: 1px solid transparent;
+      color: var(--text-secondary);
+      font-family: var(--font-sans);
+      font-size: 0.875rem;
+      font-weight: 500;
+      padding: 0.45rem 0.9rem;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: var(--transition-smooth);
+    }
+
+    .nav-btn:hover {
+      color: var(--text-primary);
+      background-color: var(--bg-subtle);
+    }
+
+    .nav-btn.active {
+      color: var(--text-primary);
+      background-color: var(--bg-surface);
+      border-color: var(--border-light);
+      box-shadow: 0 1px 2px rgba(0,0,0,0.03);
+    }
+
+    .nav-btn.primary {
+      background-color: var(--text-primary);
+      color: #FFFFFF;
+    }
+
+    .nav-btn.primary:hover {
+      background-color: #2C2C2A;
+      color: #FFFFFF;
+    }
+
+    .gas-indicator {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      font-size: 0.75rem;
+      color: var(--text-secondary);
+      background: var(--bg-surface);
+      border: 1px solid var(--border-light);
+      padding: 0.35rem 0.7rem;
+      border-radius: 99px;
+      cursor: pointer;
+      transition: var(--transition-smooth);
+    }
+
+    .gas-indicator:hover {
+      border-color: var(--text-primary);
+    }
+
+    .status-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background-color: var(--accent-gold);
+    }
+
+    .status-dot.connected {
+      background-color: var(--accent-green);
+    }
+
+    /* Main Layout & Smooth View Transitions */
+    main {
+      flex: 1;
+      max-width: 1120px;
+      width: 100%;
+      margin: 0 auto;
+      padding: 2.5rem 2rem 5rem;
+    }
+
+    .view-section {
+      display: none;
+      opacity: 0;
+      transform: translateY(14px);
+    }
+
+    .view-section.active {
+      display: block;
+      animation: pageReveal 0.45s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+    }
+
+    @keyframes pageReveal {
+      from {
+        opacity: 0;
+        transform: translateY(14px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* Editorial Masthead */
+    .editorial-header {
+      border-bottom: 1px solid var(--border-light);
+      padding-bottom: 1.75rem;
+      margin-bottom: 2.25rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      flex-wrap: wrap;
+      gap: 1.5rem;
+    }
+
+    .editorial-header h1 {
+      font-family: var(--font-serif);
+      font-size: 2.15rem;
+      font-weight: 600;
+      letter-spacing: -0.02em;
+      line-height: 1.2;
+    }
+
+    .editorial-header p {
+      color: var(--text-secondary);
+      font-size: 0.95rem;
+      margin-top: 0.4rem;
+      max-width: 540px;
+    }
+
+    .search-bar {
+      display: flex;
+      gap: 0.5rem;
+      align-items: center;
+    }
+
+    input[type="text"],
+    input[type="password"],
+    input[type="url"],
+    textarea,
+    select {
+      width: 100%;
+      padding: 0.65rem 0.9rem;
+      background-color: var(--bg-surface);
+      border: 1px solid var(--border-light);
+      border-radius: 6px;
+      font-family: var(--font-sans);
+      font-size: 0.92rem;
+      color: var(--text-primary);
+      transition: var(--transition-smooth);
+    }
+
+    input:focus, textarea:focus, select:focus {
+      outline: none;
+      border-color: var(--text-primary);
+      box-shadow: 0 0 0 3px rgba(20, 20, 19, 0.06);
+    }
+
+    /* Story Grid & Literary Book Cards */
+    .story-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
+      gap: 2rem;
+    }
+
+    .story-card {
+      background-color: var(--bg-surface);
+      border: 1px solid var(--border-light);
+      border-radius: 8px;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      cursor: pointer;
+      transition: var(--transition-smooth);
+    }
+
+    .story-card:hover {
+      transform: translateY(-4px);
+      border-color: #CFCBC0;
+      box-shadow: 0 12px 28px -10px rgba(20, 20, 19, 0.08);
+    }
+
+    .story-cover {
+      height: 195px;
+      width: 100%;
+      position: relative;
+      overflow: hidden;
+      border-bottom: 1px solid var(--border-light);
+    }
+
+    .story-cover img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    .story-card:hover .story-cover img {
+      transform: scale(1.03);
+    }
+
+    /* Typographic European Literary Cover Fallback */
+    .typo-cover {
+      width: 100%;
+      height: 100%;
+      padding: 1.35rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      position: relative;
+    }
+
+    .typo-cover::before {
+      content: "";
+      position: absolute;
+      inset: 8px;
+      border: 1px solid rgba(20, 20, 19, 0.14);
+      pointer-events: none;
+    }
+
+    .typo-archive-no {
+      font-size: 0.68rem;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: rgba(20, 20, 19, 0.55);
+      font-weight: 600;
+    }
+
+    .typo-cover-title {
+      font-family: var(--font-serif);
+      font-size: 1.25rem;
+      font-weight: 600;
+      line-height: 1.3;
+      color: var(--text-primary);
+      display: -webkit-box;
+      -webkit-line-clamp: 3;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+
+    .typo-cover-author {
+      font-size: 0.72rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: rgba(20, 20, 19, 0.65);
+    }
+
+    .card-body {
+      padding: 1.25rem;
+      display: flex;
+      flex-direction: column;
+      flex: 1;
+    }
+
+    .card-meta-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.78rem;
+      color: var(--text-muted);
+      margin-bottom: 0.5rem;
+    }
+
+    .author-badge {
+      font-weight: 600;
+      color: var(--text-secondary);
+    }
+
+    .card-title {
+      font-family: var(--font-serif);
+      font-size: 1.22rem;
+      font-weight: 600;
+      line-height: 1.35;
+      margin-bottom: 0.6rem;
+      color: var(--text-primary);
+    }
+
+    .card-excerpt {
+      font-size: 0.88rem;
+      color: var(--text-secondary);
+      line-height: 1.6;
+      display: -webkit-box;
+      -webkit-line-clamp: 3;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+      margin-bottom: 1.25rem;
+      flex: 1;
+    }
+
+    .card-footer {
+      padding-top: 0.85rem;
+      border-top: 1px solid var(--border-light);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.82rem;
+    }
+
+    .rating-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+
+    .star-icon {
+      color: var(--accent-gold);
+    }
+
+    /* Buttons */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.45rem;
+      padding: 0.6rem 1.15rem;
+      border-radius: 6px;
+      font-family: var(--font-sans);
+      font-size: 0.88rem;
+      font-weight: 500;
+      cursor: pointer;
+      border: 1px solid var(--border-light);
+      background-color: var(--bg-surface);
+      color: var(--text-primary);
+      transition: var(--transition-smooth);
+    }
+
+    .btn:hover {
+      background-color: var(--bg-subtle);
+      border-color: #CFCBC0;
+    }
+
+    .btn-primary {
+      background-color: var(--text-primary);
+      color: #FFFFFF;
+      border-color: var(--text-primary);
+    }
+
+    .btn-primary:hover {
+      background-color: #2B2B29;
+      color: #FFFFFF;
+    }
+
+    .btn-danger {
+      color: var(--accent-red);
+      border-color: #FECACA;
+      background-color: #FEF2F2;
+    }
+
+    .btn-danger:hover {
+      background-color: #FEE2E2;
+    }
+
+    .btn-sm {
+      padding: 0.35rem 0.7rem;
+      font-size: 0.8rem;
+    }
+
+    /* Auth Box */
+    .auth-wrapper {
+      max-width: 420px;
+      margin: 2rem auto;
+      background: var(--bg-surface);
+      border: 1px solid var(--border-light);
+      border-radius: 10px;
+      padding: 2.25rem;
+    }
+
+    .auth-tabs {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      background: var(--bg-subtle);
+      padding: 4px;
+      border-radius: 7px;
+      margin-bottom: 1.75rem;
+    }
+
+    .auth-tab {
+      text-align: center;
+      padding: 0.5rem;
+      font-size: 0.85rem;
+      font-weight: 600;
+      border-radius: 5px;
+      cursor: pointer;
+      color: var(--text-secondary);
+      transition: var(--transition-smooth);
+    }
+
+    .auth-tab.active {
+      background: var(--bg-surface);
+      color: var(--text-primary);
+      box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+    }
+
+    .form-group {
+      margin-bottom: 1.2rem;
+    }
+
+    .form-group label {
+      display: block;
+      font-size: 0.82rem;
+      font-weight: 600;
+      margin-bottom: 0.4rem;
+      color: var(--text-secondary);
+    }
+
+    .alert-box {
+      padding: 0.75rem 1rem;
+      border-radius: 6px;
+      font-size: 0.84rem;
+      margin-bottom: 1.2rem;
+      display: none;
+    }
+
+    .alert-box.error {
+      display: block;
+      background-color: #FEF2F2;
+      border: 1px solid #FECACA;
+      color: var(--accent-red);
+    }
+
+    .alert-box.success {
+      display: block;
+      background-color: #F0FDF4;
+      border: 1px solid #BBF7D0;
+      color: var(--accent-green);
+    }
+
+    /* Editor & Upload */
+    .editor-container {
+      max-width: 780px;
+      margin: 0 auto;
+      background: var(--bg-surface);
+      border: 1px solid var(--border-light);
+      border-radius: 10px;
+      padding: 2.25rem;
+    }
+
+    .mode-switch {
+      display: flex;
+      gap: 0.75rem;
+      margin-bottom: 1.5rem;
+      padding-bottom: 1.25rem;
+      border-bottom: 1px solid var(--border-light);
+    }
+
+    .file-dropzone {
+      border: 1.5px dashed #CFCBC0;
+      background: var(--bg-page);
+      border-radius: 8px;
+      padding: 2rem;
+      text-align: center;
+      cursor: pointer;
+      transition: var(--transition-smooth);
+      margin-bottom: 1.25rem;
+    }
+
+    .file-dropzone:hover {
+      border-color: var(--text-primary);
+      background: var(--bg-subtle);
+    }
+
+    .story-textarea {
+      font-family: var(--font-serif);
+      font-size: 1.05rem;
+      line-height: 1.85;
+      min-height: 320px;
+      resize: vertical;
+    }
+
+    .editor-actions {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      gap: 1rem;
+      margin-top: 1.5rem;
+      padding-top: 1.25rem;
+      border-top: 1px solid var(--border-light);
+    }
+
+    /* Reader View */
+    .reader-article {
+      max-width: 700px;
+      margin: 0 auto;
+    }
+
+    .reader-back {
+      margin-bottom: 2rem;
+    }
+
+    .reader-header {
+      margin-bottom: 2rem;
+      padding-bottom: 1.5rem;
+      border-bottom: 1px solid var(--border-light);
+    }
+
+    .reader-title {
+      font-family: var(--font-serif);
+      font-size: 2.45rem;
+      font-weight: 700;
+      line-height: 1.22;
+      margin-bottom: 0.85rem;
+    }
+
+    .reader-meta {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 1rem;
+      font-size: 0.88rem;
+      color: var(--text-secondary);
+    }
+
+    .reader-cover-img {
+      width: 100%;
+      max-height: 380px;
+      object-fit: cover;
+      border-radius: 8px;
+      margin-bottom: 2rem;
+      border: 1px solid var(--border-light);
+    }
+
+    .reader-content {
+      font-family: var(--font-serif);
+      font-size: 1.14rem;
+      line-height: 1.95;
+      color: #1F1F1D;
+      white-space: pre-wrap;
+      margin-bottom: 3.5rem;
+    }
+
+    /* 0.5 Step Star Rating Widget */
+    .interaction-box {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-light);
+      border-radius: 10px;
+      padding: 1.75rem;
+      margin-bottom: 2.5rem;
+    }
+
+    .star-rating-widget {
+      display: flex;
+      align-items: center;
+      gap: 0.35rem;
+      margin: 0.75rem 0;
+      user-select: none;
+    }
+
+    .star-slot {
+      position: relative;
+      width: 32px;
+      height: 32px;
+      cursor: pointer;
+    }
+
+    .star-slot svg {
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
+
+    .rating-readout {
+      margin-left: 0.75rem;
+      font-weight: 600;
+      font-size: 0.95rem;
+      color: var(--text-primary);
+      background: var(--bg-subtle);
+      padding: 0.25rem 0.65rem;
+      border-radius: 5px;
+    }
+
+    .comment-list {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      margin-top: 1.5rem;
+    }
+
+    .comment-item {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-light);
+      border-radius: 8px;
+      padding: 1.1rem 1.25rem;
+    }
+
+    .comment-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 0.45rem;
+      font-size: 0.84rem;
+    }
+
+    .comment-author {
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+
+    .comment-text {
+      font-size: 0.92rem;
+      color: var(--text-secondary);
+      line-height: 1.6;
+    }
+
+    /* Status Badge */
+    .status-badge {
+      display: inline-block;
+      padding: 0.2rem 0.55rem;
+      border-radius: 4px;
+      font-size: 0.72rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .status-public { background: #DCFCE7; color: #166534; }
+    .status-private { background: #FEF3C7; color: #92400E; }
+    .status-draft { background: #F3F4F6; color: #374151; }
+
+    /* Modal */
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(20, 20, 19, 0.45);
+      backdrop-filter: blur(4px);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 100;
+      padding: 1rem;
+    }
+
+    .modal-backdrop.open {
+      display: flex;
+      animation: fadeIn 0.25s ease forwards;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    .modal-card {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-light);
+      border-radius: 10px;
+      max-width: 640px;
+      width: 100%;
+      max-height: 88vh;
+      overflow-y: auto;
+      padding: 2rem;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.12);
+    }
+
+    .code-block {
+      background: #18181B;
+      color: #E4E4E7;
+      padding: 1rem;
+      border-radius: 6px;
+      font-family: monospace;
+      font-size: 0.78rem;
+      overflow-x: auto;
+      max-height: 220px;
+      margin: 0.75rem 0;
+      white-space: pre;
+    }
+
+    /* Toast */
+    .toast {
+      position: fixed;
+      bottom: 1.5rem;
+      right: 1.5rem;
+      background: var(--text-primary);
+      color: #FFFFFF;
+      padding: 0.75rem 1.25rem;
+      border-radius: 6px;
+      font-size: 0.86rem;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+      transform: translateY(100px);
+      opacity: 0;
+      transition: var(--transition-smooth);
+      z-index: 200;
+    }
+
+    .toast.show {
+      transform: translateY(0);
+      opacity: 1;
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 4.5rem 1.5rem;
+      color: var(--text-muted);
+      border: 1px dashed var(--border-light);
+      border-radius: 10px;
+      background: var(--bg-surface);
+    }
+
+    .empty-state p {
+      font-family: var(--font-serif);
+      font-size: 1.15rem;
+      color: var(--text-secondary);
+      margin-bottom: 0.5rem;
+    }
+
+    @media (max-width: 720px) {
+      header { padding: 0.85rem 1rem; }
+      main { padding: 1.75rem 1rem 4rem; }
+      .brand-tag { display: none; }
+      .reader-title { font-size: 1.85rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Header -->
+  <header>
+    <div class="nav-container">
+      <a class="brand" onclick="switchView('dashboard')">
+        <span class="brand-title">FOLIO</span>
+        <span class="brand-tag">Arsip Sastra & Cerita</span>
+      </a>
+
+      <div class="nav-links">
+        <button class="nav-btn active" id="nav-dashboard" onclick="switchView('dashboard')">Jelajahi</button>
+        <button class="nav-btn" id="nav-my-stories" onclick="switchView('my-stories')" style="display:none;">Karya Saya</button>
+        <button class="nav-btn" id="nav-write" onclick="openEditor()" style="display:none;">Tulis / Unggah</button>
+        
+        <button class="gas-indicator" onclick="openGasModal()" title="Konfigurasi Google Spreadsheets">
+          <span class="status-dot" id="gas-dot"></span>
+          <span id="gas-label">Mode Lokal</span>
+        </button>
+
+        <button class="nav-btn primary" id="nav-auth" onclick="switchView('auth')">Masuk / Daftar</button>
+        <button class="nav-btn" id="nav-logout" onclick="logout()" style="display:none;">Keluar (<span id="current-user-label"></span>)</button>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <!-- 1. DASHBOARD VIEW -->
+    <section id="view-dashboard" class="view-section active">
+      <div class="editorial-header">
+        <div>
+          <h1>Katalog Cerita Publik</h1>
+          <p>Kumpulan prosa, esai pendek, dan fiksi yang diterbitkan langsung oleh para penulis.</p>
+        </div>
+        <div class="search-bar">
+          <input type="text" id="search-input" placeholder="Cari judul atau penulis..." oninput="renderDashboard()" style="width: 240px;">
+        </div>
+      </div>
+
+      <div id="dashboard-grid" class="story-grid"></div>
+    </section>
+
+    <!-- 2. AUTH VIEW -->
+    <section id="view-auth" class="view-section">
+      <div class="auth-wrapper">
+        <div class="auth-tabs">
+          <div class="auth-tab active" id="tab-login" onclick="setAuthMode('login')">Masuk Akun</div>
+          <div class="auth-tab" id="tab-register" onclick="setAuthMode('register')">Daftar Baru</div>
+        </div>
+
+        <div id="auth-alert" class="alert-box"></div>
+
+        <form id="auth-form" onsubmit="handleAuthSubmit(event)">
+          <div class="form-group">
+            <label for="auth-username">Username</label>
+            <input type="text" id="auth-username" required autocomplete="username" placeholder="Masukkan username Anda">
+          </div>
+          <div class="form-group">
+            <label for="auth-password">Password</label>
+            <input type="password" id="auth-password" required autocomplete="current-password" placeholder="Masukkan password">
+          </div>
+          <button type="submit" class="btn btn-primary" style="width:100%; margin-top:0.5rem;" id="auth-submit-btn">Masuk ke FOLIO</button>
+        </form>
+      </div>
+    </section>
+
+    <!-- 3. WRITE / UPLOAD VIEW -->
+    <section id="view-write" class="view-section">
+      <div class="editor-container">
+        <div class="editorial-header" style="margin-bottom:1.5rem; padding-bottom:1rem;">
+          <div>
+            <h1 id="editor-heading" style="font-size:1.65rem;">Naskah Baru</h1>
+            <p>Tulis langsung di lembar kerja atau unggah berkas dokumen teks (.txt).</p>
+          </div>
+        </div>
+
+        <div class="mode-switch">
+          <button type="button" class="btn btn-sm active" id="btn-mode-write" onclick="setEditorInputMode('write')">Tulis Langsung</button>
+          <button type="button" class="btn btn-sm" id="btn-mode-upload" onclick="setEditorInputMode('upload')">Unggah File .txt</button>
+        </div>
+
+        <div id="upload-zone" class="file-dropzone" style="display:none;" onclick="document.getElementById('txt-file-input').click()">
+          <input type="file" id="txt-file-input" accept=".txt" style="display:none;" onchange="handleTxtUpload(event)">
+          <p style="font-weight:600; margin-bottom:0.25rem;">Klik untuk memilih berkas .txt</p>
+          <p style="font-size:0.82rem; color:var(--text-muted);">Judul otomatis diambil dari nama file, dan isi teks akan dimuat ke editor.</p>
+        </div>
+
+        <input type="hidden" id="edit-story-id" value="">
+
+        <div class="form-group">
+          <label for="story-title">Judul Cerita</label>
+          <input type="text" id="story-title" placeholder="Contoh: Hujan di Bulan Juni" required>
+        </div>
+
+        <div class="form-group">
+          <label for="story-thumbnail">URL Gambar Sampul / Thumbnail (Opsional)</label>
+          <input type="url" id="story-thumbnail" placeholder="https://... (Kosongkan untuk menggunakan sampul tipografi otomatis)">
+        </div>
+
+        <div class="form-group">
+          <label for="story-content">Isi Cerita</label>
+          <textarea id="story-content" class="story-textarea" placeholder="Mulai menulis cerita Anda di sini..."></textarea>
+        </div>
+
+        <div class="editor-actions">
+          <button type="button" class="btn" onclick="switchView('my-stories')">Batal</button>
+          <div style="display:flex; gap:0.6rem; flex-wrap:wrap;">
+            <button type="button" class="btn" onclick="saveStory('draft')">Simpan Draft</button>
+            <button type="button" class="btn" onclick="saveStory('private')">Simpan Private</button>
+            <button type="button" class="btn btn-primary" onclick="saveStory('public')">Publish ke Public</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 4. MY STORIES VIEW -->
+    <section id="view-my-stories" class="view-section">
+      <div class="editorial-header">
+        <div>
+          <h1>Karya & Arsip Pribadi</h1>
+          <p>Kelola naskah draft, cerita privat, dan karya yang telah Anda terbitkan ke publik.</p>
+        </div>
+        <button class="btn btn-primary" onclick="openEditor()">+ Tulis Cerita Baru</button>
+      </div>
+
+      <div id="my-stories-grid" class="story-grid"></div>
+    </section>
+
+    <!-- 5. READER VIEW -->
+    <section id="view-reader" class="view-section">
+      <div class="reader-article">
+        <div class="reader-back">
+          <button class="btn btn-sm" onclick="switchView('dashboard')">← Kembali ke Katalog</button>
+        </div>
+
+        <article>
+          <div class="reader-header">
+            <h1 class="reader-title" id="reader-title"></h1>
+            <div class="reader-meta">
+              <span>Oleh <strong id="reader-author"></strong></span>
+              <span>•</span>
+              <span id="reader-date"></span>
+              <span>•</span>
+              <span class="rating-pill"><span class="star-icon">★</span> <span id="reader-avg-rating">0.0</span> (<span id="reader-rating-count">0</span> ulasan)</span>
+            </div>
+          </div>
+
+          <img id="reader-cover" class="reader-cover-img" src="" alt="Sampul Cerita" style="display:none;">
+          <div class="reader-content" id="reader-content"></div>
+        </article>
+
+        <!-- Rating & Comments -->
+        <div class="interaction-box">
+          <h3 style="font-family:var(--font-serif); font-size:1.25rem; margin-bottom:0.25rem;">Apresiasi & Ulasan Pembaca</h3>
+          <p style="font-size:0.84rem; color:var(--text-secondary);">Berikan penilaian bintang (1.0 hingga 5.0 dengan kelipatan 0.5) dan tanggapan Anda.</p>
+
+          <div class="star-rating-widget" id="star-widget" onmouseleave="resetStarHover()"></div>
+
+          <form onsubmit="submitReview(event)" style="margin-top:1rem;">
+            <div class="form-group" style="margin-bottom:0.75rem;">
+              <textarea id="comment-input" rows="3" placeholder="Tuliskan kesan atau kritik sastra Anda terhadap cerita ini..." required></textarea>
+            </div>
+            <button type="submit" class="btn btn-primary btn-sm">Kirim Ulasan & Rating</button>
+          </form>
+        </div>
+
+        <div>
+          <h4 style="font-size:0.9rem; text-transform:uppercase; letter-spacing:0.08em; color:var(--text-muted); margin-bottom:1rem;">Komentar Pembaca (<span id="comments-total">0</span>)</h4>
+          <div id="comments-container" class="comment-list"></div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- GAS Configuration Modal -->
+  <div class="modal-backdrop" id="gas-modal">
+    <div class="modal-card">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1rem;">
+        <h2 style="font-family:var(--font-serif); font-size:1.4rem;">Koneksi Google Spreadsheets (GAS)</h2>
+        <button class="btn btn-sm" onclick="closeGasModal()">✕</button>
+      </div>
+      <p style="font-size:0.86rem; color:var(--text-secondary); margin-bottom:1rem;">
+        Hubungkan aplikasi ini dengan Google Sheets menggunakan Google Apps Script agar akun, cerita, dan rating tersimpan secara cloud. Jika dikosongkan, aplikasi berjalan menggunakan penyimpanan browser lokal.
+      </p>
+
+      <div class="form-group">
+        <label for="gas-url-input">Web App URL Google Apps Script</label>
+        <input type="url" id="gas-url-input" placeholder="https://script.google.com/macros/s/...../exec">
+      </div>
+
+      <div style="display:flex; gap:0.5rem; margin-bottom:1.5rem;">
+        <button class="btn btn-primary btn-sm" onclick="saveGasUrl()">Simpan & Sinkronkan</button>
+        <button class="btn btn-sm" onclick="clearGasUrl()">Gunakan Mode Lokal</button>
+      </div>
+
+      <div style="border-top:1px solid var(--border-light); padding-top:1rem;">
+        <div style="display:flex; justify-content:space-between; align-items:center;">
+          <span style="font-size:0.82rem; font-weight:600;">Kode Google Apps Script (Code.gs)</span>
+          <button class="btn btn-sm" onclick="copyGasCode()">Salin Kode GAS</button>
+        </div>
+        <div class="code-block" id="gas-code-template"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+  <script>
+    // ==========================================
+    // 1. GOOGLE APPS SCRIPT TEMPLATE
+    // ==========================================
+    const GAS_SCRIPT_SOURCE = `function doPost(e) {
+  var ss = SpreadsheetApp.getActiveSpreadsheet();
+  var usersSheet = getOrCreateSheet(ss, 'Users', ['username', 'password', 'createdAt']);
+  var storiesSheet = getOrCreateSheet(ss, 'Stories', ['id', 'title', 'content', 'thumbnail', 'author', 'status', 'createdAt']);
+  var commentsSheet = getOrCreateSheet(ss, 'Comments', ['id', 'storyId', 'username', 'rating', 'comment', 'createdAt']);
+
+  var payload = JSON.parse(e.postData.contents);
+  var action = payload.action;
+
+  if (action === 'register') {
+    var users = usersSheet.getDataRange().getValues();
+    for (var i = 1; i < users.length; i++) {
+      if (String(users[i][0]).toLowerCase() === String(payload.username).toLowerCase()) {
+        return jsonResponse({ status: 'error', message: 'Username sudah terdaftar.' });
+      }
+    }
+    usersSheet.appendRow([payload.username, payload.password, new Date().toISOString()]);
+    return jsonResponse({ status: 'ok' });
+  }
+
+  if (action === 'login') {
+    var users = usersSheet.getDataRange().getValues();
+    for (var i = 1; i < users.length; i++) {
+      if (String(users[i][0]) === String(payload.username) && String(users[i][1]) === String(payload.password)) {
+        return jsonResponse({ status: 'ok', username: users[i][0] });
+      }
+    }
+    return jsonResponse({ status: 'error', message: 'Username atau password salah.' });
+  }
+
+  if (action === 'saveStory') {
+    var data = storiesSheet.getDataRange().getValues();
+    var foundRow = -1;
+    for (var i = 1; i < data.length; i++) {
+      if (String(data[i][0]) === String(payload.story.id)) {
+        foundRow = i + 1;
+        break;
+      }
+    }
+    var rowValues = [
+      payload.story.id,
+      payload.story.title,
+      payload.story.content,
+      payload.story.thumbnail || '',
+      payload.story.author,
+      payload.story.status,
+      payload.story.createdAt
+    ];
+    if (foundRow > 0) {
+      storiesSheet.getRange(foundRow, 1, 1, rowValues.length).setValues([rowValues]);
+    } else {
+      storiesSheet.appendRow(rowValues);
+    }
+    return jsonResponse({ status: 'ok' });
+  }
+
+  if (action === 'deleteStory') {
+    var data = storiesSheet.getDataRange().getValues();
+    for (var i = 1; i < data.length; i++) {
+      if (String(data[i][0]) === String(payload.id)) {
+        storiesSheet.deleteRow(i + 1);
+        break;
+      }
+    }
+    return jsonResponse({ status: 'ok' });
+  }
+
+  if (action === 'addReview') {
+    commentsSheet.appendRow([
+      payload.review.id,
+      payload.review.storyId,
+      payload.review.username,
+      payload.review.rating,
+      payload.review.comment,
+      payload.review.createdAt
+    ]);
+    return jsonResponse({ status: 'ok' });
+  }
+
+  return jsonResponse({ status: 'error', message: 'Unknown action' });
+}
+
+function doGet(e) {
+  var ss = SpreadsheetApp.getActiveSpreadsheet();
+  var storiesSheet = getOrCreateSheet(ss, 'Stories', ['id', 'title', 'content', 'thumbnail', 'author', 'status', 'createdAt']);
+  var commentsSheet = getOrCreateSheet(ss, 'Comments', ['id', 'storyId', 'username', 'rating', 'comment', 'createdAt']);
+
+  var storiesRows = storiesSheet.getDataRange().getValues();
+  var stories = [];
+  for (var i = 1; i < storiesRows.length; i++) {
+    stories.push({
+      id: String(storiesRows[i][0]),
+      title: storiesRows[i][1],
+      content: storiesRows[i][2],
+      thumbnail: storiesRows[i][3],
+      author: storiesRows[i][4],
+      status: storiesRows[i][5],
+      createdAt: storiesRows[i][6]
+    });
+  }
+
+  var commentsRows = commentsSheet.getDataRange().getValues();
+  var comments = [];
+  for (var j = 1; j < commentsRows.length; j++) {
+    comments.push({
+      id: String(commentsRows[j][0]),
+      storyId: String(commentsRows[j][1]),
+      username: commentsRows[j][2],
+      rating: Number(commentsRows[j][3]),
+      comment: commentsRows[j][4],
+      createdAt: commentsRows[j][5]
+    });
+  }
+
+  return jsonResponse({ status: 'ok', stories: stories, comments: comments });
+}
+
+function getOrCreateSheet(ss, name, headers) {
+  var sheet = ss.getSheetByName(name);
+  if (!sheet) {
+    sheet = ss.insertSheet(name);
+    sheet.appendRow(headers);
+  }
+  return sheet;
+}
+
+function jsonResponse(obj) {
+  return ContentService.createTextOutput(JSON.stringify(obj)).setMimeType(ContentService.MimeType.JSON);
+}`;
+
+    // ==========================================
+    // 2. STATE MANAGEMENT (CLEAN / EMPTY INITIAL)
+    // ==========================================
+    // Jika Anda sudah men-deploy GAS, Anda bisa menempelkan URL-nya di dalam tanda kutip di bawah ini
+    const DEFAULT_GAS_URL = "https://script.google.com/macros/s/AKfycbwygY8seIG0z3U8kmKykiYZiBb0R3Sxk5ZyGRqlyfOc9ruK9Nhhb3-VNG3UA2NyyTDi/exec"; 
+
+    const STORAGE_KEYS = {
+      GAS_URL: 'folio_gas_url',
+      USERS: 'folio_users_db',
+      STORIES: 'folio_stories_db',
+      COMMENTS: 'folio_comments_db',
+      SESSION: 'folio_current_user'
+    };
+
+    let state = {
+      gasUrl: localStorage.getItem(STORAGE_KEYS.GAS_URL) || DEFAULT_GAS_URL,
+      currentUser: localStorage.getItem(STORAGE_KEYS.SESSION) || null,
+      authMode: 'login',
+      stories: [],
+      comments: [],
+      activeStoryId: null,
+      selectedRating: 5.0,
+      hoverRating: 0
+    };
+
+    const COVER_PALETTES = [
+      '#EFECE4', '#E6EAE6', '#EAE4E2', '#E4E7EC', '#EFEAE1', '#E8E6EC'
+    ];
+
+    function initApp() {
+      document.getElementById('gas-code-template').textContent = GAS_SCRIPT_SOURCE;
+      document.getElementById('gas-url-input').value = state.gasUrl;
+
+      // Pastikan penyimpanan lokal dimulai dalam keadaan bersih (tanpa cerita dummy)
+      if (!localStorage.getItem(STORAGE_KEYS.USERS)) {
+        localStorage.setItem(STORAGE_KEYS.USERS, JSON.stringify([]));
+      }
+      if (!localStorage.getItem(STORAGE_KEYS.STORIES)) {
+        localStorage.setItem(STORAGE_KEYS.STORIES, JSON.stringify([]));
+      }
+      if (!localStorage.getItem(STORAGE_KEYS.COMMENTS)) {
+        localStorage.setItem(STORAGE_KEYS.COMMENTS, JSON.stringify([]));
+      }
+
+      updateAuthUI();
+      updateGasIndicator();
+      loadAllData();
+    }
+
+    // ==========================================
+    // 3. DATA SYNC (GAS OR LOCALSTORAGE)
+    // ==========================================
+    async function loadAllData() {
+      if (state.gasUrl) {
+        try {
+          const res = await fetch(state.gasUrl);
+          const data = await res.json();
+          if (data.status === 'ok') {
+            state.stories = data.stories || [];
+            state.comments = data.comments || [];
+            renderDashboard();
+            return;
+          }
+        } catch (err) {
+          showToast('Gagal memuat dari GAS, beralih ke data lokal.');
+        }
+      }
+      state.stories = JSON.parse(localStorage.getItem(STORAGE_KEYS.STORIES) || '[]');
+      state.comments = JSON.parse(localStorage.getItem(STORAGE_KEYS.COMMENTS) || '[]');
+      renderDashboard();
+    }
+
+    async function postToGas(payload) {
+      if (!state.gasUrl) return null;
+      const res = await fetch(state.gasUrl, {
+        method: 'POST',
+        body: JSON.stringify(payload)
+      });
+      return await res.json();
+    }
+
+    // ==========================================
+    // 4. AUTHENTICATION
+    // ==========================================
+    function setAuthMode(mode) {
+      state.authMode = mode;
+      document.getElementById('tab-login').classList.toggle('active', mode === 'login');
+      document.getElementById('tab-register').classList.toggle('active', mode === 'register');
+      document.getElementById('auth-submit-btn').textContent = mode === 'login' ? 'Masuk ke FOLIO' : 'Buat Akun Baru';
+      hideAuthAlert();
+    }
+
+    function showAuthAlert(msg, type = 'error') {
+      const el = document.getElementById('auth-alert');
+      el.textContent = msg;
+      el.className = 'alert-box ' + type;
+    }
+
+    function hideAuthAlert() {
+      document.getElementById('auth-alert').className = 'alert-box';
+    }
+
+    async function handleAuthSubmit(e) {
+      e.preventDefault();
+      hideAuthAlert();
+      const username = document.getElementById('auth-username').value.trim();
+      const password = document.getElementById('auth-password').value;
+
+      if (!username || !password) {
+        showAuthAlert('Username dan password wajib diisi.');
+        return;
+      }
+
+      const btn = document.getElementById('auth-submit-btn');
+      btn.disabled = true;
+
+      try {
+        if (state.gasUrl) {
+          const res = await postToGas({
+            action: state.authMode,
+            username,
+            password
+          });
+          if (res.status !== 'ok') {
+            showAuthAlert(res.message || 'Autentikasi gagal.');
+            btn.disabled = false;
+            return;
+          }
+          if (state.authMode === 'register') {
+            showAuthAlert('Akun berhasil dibuat di Google Spreadsheets! Silakan masuk.', 'success');
+            setAuthMode('login');
+            btn.disabled = false;
+            return;
+          }
+          completeLogin(username);
+        } else {
+          // Local Simulation
+          const users = JSON.parse(localStorage.getItem(STORAGE_KEYS.USERS) || '[]');
+          if (state.authMode === 'register') {
+            const exists = users.some(u => u.username.toLowerCase() === username.toLowerCase());
+            if (exists) {
+              showAuthAlert('Username sudah digunakan. Pilih nama lain.');
+              btn.disabled = false;
+              return;
+            }
+            users.push({ username, password, createdAt: new Date().toISOString() });
+            localStorage.setItem(STORAGE_KEYS.USERS, JSON.stringify(users));
+            showAuthAlert('Akun berhasil didaftarkan! Silakan masuk.', 'success');
+            setAuthMode('login');
+          } else {
+            const valid = users.find(u => u.username === username && u.password === password);
+            if (!valid) {
+              showAuthAlert('Error: Username dan password tidak cocok atau akun belum terdaftar.');
+              btn.disabled = false;
+              return;
+            }
+            completeLogin(valid.username);
+          }
+        }
+      } catch (err) {
+        showAuthAlert('Terjadi kesalahan koneksi.');
+      }
+      btn.disabled = false;
+    }
+
+    function completeLogin(username) {
+      state.currentUser = username;
+      localStorage.setItem(STORAGE_KEYS.SESSION, username);
+      document.getElementById('auth-form').reset();
+      updateAuthUI();
+      showToast('Selamat datang, ' + username);
+      switchView('dashboard');
+    }
+
+    function logout() {
+      state.currentUser = null;
+      localStorage.removeItem(STORAGE_KEYS.SESSION);
+      updateAuthUI();
+      showToast('Anda telah keluar dari akun.');
+      switchView('dashboard');
+    }
+
+    function updateAuthUI() {
+      const loggedIn = Boolean(state.currentUser);
+      document.getElementById('nav-my-stories').style.display = loggedIn ? 'inline-block' : 'none';
+      document.getElementById('nav-write').style.display = loggedIn ? 'inline-block' : 'none';
+      document.getElementById('nav-auth').style.display = loggedIn ? 'none' : 'inline-block';
+      document.getElementById('nav-logout').style.display = loggedIn ? 'inline-block' : 'none';
+      if (loggedIn) {
+        document.getElementById('current-user-label').textContent = state.currentUser;
+      }
+    }
+
+    // ==========================================
+    // 5. NAVIGATION & SMOOTH PAGE TRANSITIONS
+    // ==========================================
+    function switchView(viewName) {
+      document.querySelectorAll('.view-section').forEach(el => {
+        el.classList.remove('active');
+      });
+      document.querySelectorAll('.nav-btn').forEach(btn => {
+        btn.classList.remove('active');
+      });
+
+      const target = document.getElementById('view-' + viewName);
+      if (target) {
+        void target.offsetWidth; // trigger reflow for smooth animation
+        target.classList.add('active');
+      }
+
+      const activeNav = document.getElementById('nav-' + viewName);
+      if (activeNav) activeNav.classList.add('active');
+
+      if (viewName === 'dashboard') renderDashboard();
+      if (viewName === 'my-stories') renderMyStories();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    // ==========================================
+    // 6. STORY EDITOR & .TXT UPLOAD
+    // ==========================================
+    function openEditor(storyId = null) {
+      if (!state.currentUser) {
+        switchView('auth');
+        return;
+      }
+      setEditorInputMode('write');
+      if (storyId) {
+        const story = state.stories.find(s => s.id === storyId);
+        if (!story) return;
+        document.getElementById('editor-heading').textContent = 'Sunting Naskah';
+        document.getElementById('edit-story-id').value = story.id;
+        document.getElementById('story-title').value = story.title;
+        document.getElementById('story-thumbnail').value = story.thumbnail || '';
+        document.getElementById('story-content').value = story.content;
+      } else {
+        document.getElementById('editor-heading').textContent = 'Naskah Baru';
+        document.getElementById('edit-story-id').value = '';
+        document.getElementById('story-title').value = '';
+        document.getElementById('story-thumbnail').value = '';
+        document.getElementById('story-content').value = '';
+      }
+      switchView('write');
+    }
+
+    function setEditorInputMode(mode) {
+      document.getElementById('btn-mode-write').classList.toggle('active', mode === 'write');
+      document.getElementById('btn-mode-upload').classList.toggle('active', mode === 'upload');
+      document.getElementById('upload-zone').style.display = mode === 'upload' ? 'block' : 'none';
+    }
+
+    function handleTxtUpload(e) {
+      const file = e.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = function(evt) {
+        const text = evt.target.result;
+        const cleanTitle = file.name.replace(/\.txt$/i, '');
+        if (!document.getElementById('story-title').value) {
+          document.getElementById('story-title').value = cleanTitle;
+        }
+        document.getElementById('story-content').value = text;
+        showToast('Berkas "' + file.name + '" berhasil dimuat.');
+      };
+      reader.readAsText(file);
+    }
+
+    async function saveStory(status) {
+      if (!state.currentUser) {
+        showToast('Silakan masuk terlebih dahulu.');
+        return;
+      }
+      const title = document.getElementById('story-title').value.trim();
+      const content = document.getElementById('story-content').value.trim();
+      const thumbnail = document.getElementById('story-thumbnail').value.trim();
+      const existingId = document.getElementById('edit-story-id').value;
+
+      if (!title || !content) {
+        showToast('Judul dan isi cerita tidak boleh kosong.');
+        return;
+      }
+
+      const storyObj = {
+        id: existingId || 'story-' + Date.now(),
+        title,
+        content,
+        thumbnail,
+        author: state.currentUser,
+        status,
+        createdAt: new Date().toISOString()
+      };
+
+      const idx = state.stories.findIndex(s => s.id === storyObj.id);
+      if (idx >= 0) {
+        state.stories[idx] = storyObj;
+      } else {
+        state.stories.unshift(storyObj);
+      }
+
+      localStorage.setItem(STORAGE_KEYS.STORIES, JSON.stringify(state.stories));
+
+      if (state.gasUrl) {
+        showToast('Menyimpan ke Google Spreadsheets...');
+        await postToGas({ action: 'saveStory', story: storyObj });
+      }
+
+      const labelMap = { draft: 'Draft tersimpan', private: 'Disimpan sebagai Private', public: 'Berhasil dipublikasikan!' };
+      showToast(labelMap[status]);
+      switchView(status === 'public' ? 'dashboard' : 'my-stories');
+    }
+
+    async function deleteStory(id) {
+      if (!confirm('Hapus cerita ini secara permanen?')) return;
+      state.stories = state.stories.filter(s => s.id !== id);
+      localStorage.setItem(STORAGE_KEYS.STORIES, JSON.stringify(state.stories));
+      if (state.gasUrl) {
+        await postToGas({ action: 'deleteStory', id });
+      }
+      renderMyStories();
+      showToast('Cerita dihapus.');
+    }
+
+    // ==========================================
+    // 7. RENDERING CARDS & LITERARY COVERS
+    // ==========================================
+    function getStoryStats(storyId) {
+      const list = state.comments.filter(c => c.storyId === storyId);
+      if (list.length === 0) return { avg: 'Baru', count: 0 };
+      const sum = list.reduce((acc, item) => acc + Number(item.rating), 0);
+      return {
+        avg: (sum / list.length).toFixed(1),
+        count: list.length
+      };
+    }
+
+    function buildCoverHTML(story, index) {
+      if (story.thumbnail) {
+        return `<div class="story-cover"><img src="${escapeHTML(story.thumbnail)}" alt="${escapeHTML(story.title)}" onerror="this.parentElement.innerHTML=buildFallbackCover('${escapeHTML(story.title)}','${escapeHTML(story.author)}',${index})"></div>`;
+      }
+      return `<div class="story-cover">${buildFallbackCover(story.title, story.author, index)}</div>`;
+    }
+
+    function buildFallbackCover(title, author, index) {
+      const bg = COVER_PALETTES[index % COVER_PALETTES.length];
+      const num = String(index + 1).padStart(3, '0');
+      return `
+        <div class="typo-cover" style="background-color:${bg};">
+          <div class="typo-archive-no">FOLIO ARCHIVE NO. ${num}</div>
+          <div class="typo-cover-title">${escapeHTML(title)}</div>
+          <div class="typo-cover-author">${escapeHTML(author)}</div>
+        </div>
+      `;
+    }
+
+    function renderDashboard() {
+      const grid = document.getElementById('dashboard-grid');
+      const query = (document.getElementById('search-input').value || '').toLowerCase();
+
+      const publicStories = state.stories.filter(s =>
+        s.status === 'public' &&
+        (s.title.toLowerCase().includes(query) || s.author.toLowerCase().includes(query))
+      );
+
+      if (publicStories.length === 0) {
+        grid.innerHTML = `
+          <div class="empty-state" style="grid-column:1/-1;">
+            <p>Belum ada cerita publik yang diterbitkan.</p>
+            <span style="font-size:0.86rem;">Daftar akun dan jadilah penulis pertama yang menerbitkan karya di sini.</span>
+          </div>`;
+        return;
+      }
+
+      grid.innerHTML = publicStories.map((story, idx) => {
+        const stats = getStoryStats(story.id);
+        const dateStr = new Date(story.createdAt).toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' });
+        return `
+          <article class="story-card" onclick="openReader('${story.id}')">
+            ${buildCoverHTML(story, idx)}
+            <div class="card-body">
+              <div class="card-meta-top">
+                <span class="author-badge">@${escapeHTML(story.author)}</span>
+                <span>${dateStr}</span>
+              </div>
+              <h2 class="card-title">${escapeHTML(story.title)}</h2>
+              <p class="card-excerpt">${escapeHTML(story.content)}</p>
+              <div class="card-footer">
+                <span class="rating-pill">
+                  <span class="star-icon">★</span>
+                  <span>${stats.avg}</span>
+                  <span style="color:var(--text-muted); font-weight:400;">(${stats.count})</span>
+                </span>
+                <span style="font-size:0.78rem; font-weight:600; color:var(--text-secondary);">Baca →</span>
+              </div>
+            </div>
+          </article>
+        `;
+      }).join('');
+    }
+
+    function renderMyStories() {
+      const grid = document.getElementById('my-stories-grid');
+      const mine = state.stories.filter(s => s.author === state.currentUser);
+
+      if (mine.length === 0) {
+        grid.innerHTML = `
+          <div class="empty-state" style="grid-column:1/-1;">
+            <p>Anda belum memiliki naskah cerita.</p>
+            <span style="font-size:0.86rem;">Klik tombol "+ Tulis Cerita Baru" untuk mulai menulis atau mengunggah berkas .txt.</span>
+          </div>`;
+        return;
+      }
+
+      grid.innerHTML = mine.map((story, idx) => {
+        const stats = getStoryStats(story.id);
+        return `
+          <article class="story-card" style="cursor:default;">
+            <div onclick="openReader('${story.id}')" style="cursor:pointer;">
+              ${buildCoverHTML(story, idx)}
+            </div>
+            <div class="card-body">
+              <div class="card-meta-top">
+                <span class="status-badge status-${story.status}">${story.status}</span>
+                <span class="rating-pill"><span class="star-icon">★</span> ${stats.avg}</span>
+              </div>
+              <h2 class="card-title" style="cursor:pointer;" onclick="openReader('${story.id}')">${escapeHTML(story.title)}</h2>
+              <p class="card-excerpt">${escapeHTML(story.content)}</p>
+              <div class="card-footer" style="gap:0.4rem;">
+                <button class="btn btn-sm" onclick="openEditor('${story.id}')">Edit</button>
+                <button class="btn btn-sm btn-danger" onclick="deleteStory('${story.id}')">Hapus</button>
+              </div>
+            </div>
+          </article>
+        `;
+      }).join('');
+    }
+
+    // ==========================================
+    // 8. READER, 0.5 STAR RATING & COMMENTS
+    // ==========================================
+    function openReader(storyId) {
+      const story = state.stories.find(s => s.id === storyId);
+      if (!story) return;
+
+      state.activeStoryId = storyId;
+      state.selectedRating = 5.0;
+
+      document.getElementById('reader-title').textContent = story.title;
+      document.getElementById('reader-author').textContent = '@' + story.author;
+      document.getElementById('reader-date').textContent = new Date(story.createdAt).toLocaleDateString('id-ID', {
+        day: 'numeric', month: 'long', year: 'numeric'
+      });
+
+      const coverEl = document.getElementById('reader-cover');
+      if (story.thumbnail) {
+        coverEl.src = story.thumbnail;
+        coverEl.style.display = 'block';
+      } else {
+        coverEl.style.display = 'none';
+      }
+
+      document.getElementById('reader-content').textContent = story.content;
+      renderStarWidget(state.selectedRating);
+      renderComments();
+      switchView('reader');
+    }
+
+    function renderStarWidget(displayValue) {
+      const container = document.getElementById('star-widget');
+      let html = '';
+
+      for (let i = 1; i <= 5; i++) {
+        let fillPercent = 0;
+        if (displayValue >= i) {
+          fillPercent = 100;
+        } else if (displayValue >= i - 0.5) {
+          fillPercent = 50;
+        }
+
+        const gradId = 'star-grad-' + i;
+        html += `
+          <div class="star-slot"
+               onmousemove="handleStarMouseMove(event, ${i})"
+               onclick="handleStarClick(event, ${i})">
+            <svg viewBox="0 0 24 24">
+              <defs>
+                <linearGradient id="${gradId}">
+                  <stop offset="${fillPercent}%" stop-color="#D97706"/>
+                  <stop offset="${fillPercent}%" stop-color="#E6E4DC"/>
+                </linearGradient>
+              </defs>
+              <path fill="url(#${gradId})" d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+            </svg>
+          </div>
+        `;
+      }
+
+      html += `<span class="rating-readout">${displayValue.toFixed(1)} / 5.0</span>`;
+      container.innerHTML = html;
+    }
+
+    function calculateHalfStarValue(event, starIndex) {
+      const rect = event.currentTarget.getBoundingClientRect();
+      const x = event.clientX - rect.left;
+      const isLeftHalf = x < rect.width / 2;
+      let val = isLeftHalf ? starIndex - 0.5 : starIndex;
+      if (val < 1.0) val = 1.0; // Minimal rating adalah 1.0 bintang
+      return val;
+    }
+
+    function handleStarMouseMove(event, starIndex) {
+      const val = calculateHalfStarValue(event, starIndex);
+      renderStarWidget(val);
+    }
+
+    function handleStarClick(event, starIndex) {
+      state.selectedRating = calculateHalfStarValue(event, starIndex);
+      renderStarWidget(state.selectedRating);
+    }
+
+    function resetStarHover() {
+      renderStarWidget(state.selectedRating);
+    }
+
+    async function submitReview(e) {
+      e.preventDefault();
+      const commentText = document.getElementById('comment-input').value.trim();
+      if (!commentText) return;
+
+      const reviewer = state.currentUser || 'Pembaca Tamu';
+      const reviewObj = {
+        id: 'rev-' + Date.now(),
+        storyId: state.activeStoryId,
+        username: reviewer,
+        rating: state.selectedRating,
+        comment: commentText,
+        createdAt: new Date().toISOString()
+      };
+
+      state.comments.unshift(reviewObj);
+      localStorage.setItem(STORAGE_KEYS.COMMENTS, JSON.stringify(state.comments));
+      document.getElementById('comment-input').value = '';
+
+      if (state.gasUrl) {
+        await postToGas({ action: 'addReview', review: reviewObj });
+      }
+
+      renderComments();
+      showToast('Ulasan dan rating ' + reviewObj.rating.toFixed(1) + ' bintang dikirim.');
+    }
+
+    function renderComments() {
+      const storyComments = state.comments.filter(c => c.storyId === state.activeStoryId);
+      const stats = getStoryStats(state.activeStoryId);
+
+      document.getElementById('reader-avg-rating').textContent = stats.avg;
+      document.getElementById('reader-rating-count').textContent = stats.count;
+      document.getElementById('comments-total').textContent = storyComments.length;
+
+      const container = document.getElementById('comments-container');
+      if (storyComments.length === 0) {
+        container.innerHTML = `<p style="color:var(--text-muted); font-size:0.88rem;">Belum ada komentar untuk cerita ini.</p>`;
+        return;
+      }
+
+      container.innerHTML = storyComments.map(c => `
+        <div class="comment-item">
+          <div class="comment-header">
+            <span class="comment-author">@${escapeHTML(c.username)}</span>
+            <span class="rating-pill" style="font-size:0.8rem;"><span class="star-icon">★</span> ${Number(c.rating).toFixed(1)}</span>
+          </div>
+          <p class="comment-text">${escapeHTML(c.comment)}</p>
+        </div>
+      `).join('');
+    }
+
+    // ==========================================
+    // 9. GAS MODAL & HELPERS
+    // ==========================================
+    function openGasModal() {
+      document.getElementById('gas-modal').classList.add('open');
+    }
+
+    function closeGasModal() {
+      document.getElementById('gas-modal').classList.remove('open');
+    }
+
+    function saveGasUrl() {
+      const url = document.getElementById('gas-url-input').value.trim();
+      state.gasUrl = url;
+      localStorage.setItem(STORAGE_KEYS.GAS_URL, url);
+      updateGasIndicator();
+      closeGasModal();
+      loadAllData();
+      showToast(url ? 'Terhubung ke Google Spreadsheets.' : 'Beralih ke Mode Lokal.');
+    }
+
+    function clearGasUrl() {
+      document.getElementById('gas-url-input').value = '';
+      saveGasUrl();
+    }
+
+    function updateGasIndicator() {
+      const dot = document.getElementById('gas-dot');
+      const label = document.getElementById('gas-label');
+      if (state.gasUrl) {
+        dot.classList.add('connected');
+        label.textContent = 'Sheets Terhubung';
+      } else {
+        dot.classList.remove('connected');
+        label.textContent = 'Mode Lokal';
+      }
+    }
+
+    function copyGasCode() {
+      navigator.clipboard.writeText(GAS_SCRIPT_SOURCE);
+      showToast('Kode Google Apps Script disalin ke clipboard.');
+    }
+
+    function showToast(msg) {
+      const t = document.getElementById('toast');
+      t.textContent = msg;
+      t.classList.add('show');
+      setTimeout(() => t.classList.remove('show'), 3200);
+    }
+
+    function escapeHTML(str) {
+      return String(str || '')
+        .replace(/&/g, '&')
+        .replace(/</g, '<')
+        .replace(/>/g, '>')
+        .replace(/"/g, '"');
+    }
+
+    window.addEventListener('DOMContentLoaded', initApp);
+  </script>
+</body>
+</html>
